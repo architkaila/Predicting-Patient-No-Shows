@@ -5,6 +5,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import streamlit as st
 from streamlit import runtime
+import datetime
 
 import data_explorer
 import patient_predictor
@@ -15,9 +16,13 @@ import neighbourhood_analysis
 def load_data():
     """ Loads the required dataframe into the webapp """
 
-    print("[INFO] Data is loaded")
-
     df = pd.read_csv('./streamlit_app/data/data_for_app.csv')
+
+    df["scheduledday"] = pd.to_datetime(df["scheduledday"], format='%Y-%m-%d %H:%M:%S')
+    df["appointmentday"] = pd.to_datetime(df["appointmentday"], format='%Y-%m-%d %H:%M:%S')
+
+
+    print("[INFO] Data is loaded")
 
     return df
 
