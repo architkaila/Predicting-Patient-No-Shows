@@ -1,22 +1,54 @@
 import numpy as np
 import pandas as pd
-#from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import OrdinalEncoder
+from sklearn.preprocessing import StandardScaler, OneHotEncoder
 import pickle
 
-def predict_patient_showup(appointment_id):
-    return "Hello World !"
+def onehot_encode(X, cols):
+    # Treat new categories as a new 'unknown' category (all onehot columns are 0)
+    onehot_enc = OneHotEncoder(handle_unknown='ignore')
+    # Fit encoder on training data
+    onehot_enc.fit(X[cols])
+    # Get the names of the new columns created
+    colnames = list(onehot_enc.get_feature_names(input_features=cols))
+    # Transform the data
+    onehot_vals = onehot_enc.transform(X[cols]).toarray()
+    # Put transformed data into dataframe
+    enc_df = pd.DataFrame(onehot_vals,columns=colnames,index=X.index)
+    # Add onehot columns back onto original dataframe and drop the original columns
+    X = pd.concat([X,enc_df],axis=1).drop(cols,axis=1)
+    return X,onehot_enc
 
 
+def predict_patient_showup(appointment_id, df):
     # Load the model
-    with open('final_model.sav', 'rb') as f:
+    with open('finalized_model.sav', 'rb') as f:
         model = pickle.load(f)
     
-    classes = {0:'No',1:'Yes'}
+    data_for_pred = df.copy()
     
-    # return prediction as well as class probabilities
-    preds = model.predict_proba([arr])[0]
-    return (classes[np.argmax(preds)], preds)
+    ## Ordinal encoder for features
+    enc = OrdinalEncoder(handle_unknown='use_encoded_value', unknown_value=-1)
 
+    ## Fit encoder on train and apply to test data as well
+    data_for_pred[["gender"]] = enc.fit_transform(data_for_pred[["gender"]])
+
+    ## One hot encode the train data
+    cols = ["appointment_day_of_week"]
+    data_for_pred, onehot_enc = onehot_encode(data_for_pred, cols)
+
+    data_for_pred = data_for_pred[data_for_pred["appointmentid"] == int(appointment_id)].copy()
+    data_for_pred.drop(columns=["age_group", "neighbourhood", "patientid", "appointmentid",
+                    "scheduledday", "appointmentday", "showed", "no_show"] , inplace=True)
+    
+    ## predict class
+    y_pred_class = model.predict(data_for_pred)
+
+    return y_pred_class[0]
+    
+    # # calculate prediction as well as class probabilities
+    # preds = model.predict_proba([arr])[0]
+    # return (classes[np.argmax(preds)], preds)
 
 # import streamlit as st
 # import numpy as np

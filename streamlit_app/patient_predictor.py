@@ -143,7 +143,12 @@ def patient_predictor_UI(df):
 
 
         if st.button('Predict'):
-            prediction = predict_patient_showup(selected_appointment)
-            
-            ## Show the prediction from our model
-            st.write(prediction)
+            ## Show output of model
+            prediction = predict_patient_showup(selected_appointment, df)
+            if prediction == 0:
+                st.success('This Patient will ShowUp', icon="✅")
+            else:
+                st.warning('Patient will Not ShowUp', icon="⚠️")
+        
+        st.markdown("""---""")
+

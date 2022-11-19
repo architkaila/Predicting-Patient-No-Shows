@@ -16,7 +16,7 @@ import neighbourhood_analysis
 def load_data():
     """ Loads the required dataframe into the webapp """
 
-    df = pd.read_csv('./streamlit_app/data/data_for_app.csv')
+    df = pd.read_csv('./streamlit_app/data/final_data_for_modelling.csv')
 
     df["scheduledday"] = pd.to_datetime(df["scheduledday"], format='%Y-%m-%d %H:%M:%S')
     df["appointmentday"] = pd.to_datetime(df["appointmentday"], format='%Y-%m-%d %H:%M:%S')
