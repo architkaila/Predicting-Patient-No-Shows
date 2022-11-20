@@ -6,6 +6,7 @@ import plotly.express as px
 import streamlit as st
 from streamlit import runtime
 import datetime
+import sqlite3
 
 import data_explorer
 import patient_predictor
@@ -16,24 +17,26 @@ import neighbourhood_analysis
 def load_data():
     """ Loads the required dataframe into the webapp """
 
-    df = pd.read_csv('./streamlit_app/data/final_data_for_modelling.csv')
+    ## Make a connection to the databse
+    conn = sqlite3.connect('data/database.db')
+    c = conn.cursor()
+    ## Read data from the database
+    df = pd.read_sql_query("SELECT * FROM final_data_for_modelling", conn)
 
     df["scheduledday"] = pd.to_datetime(df["scheduledday"], format='%Y-%m-%d %H:%M:%S')
     df["appointmentday"] = pd.to_datetime(df["appointmentday"], format='%Y-%m-%d %H:%M:%S')
-
 
     print("[INFO] Data is loaded")
 
     return df
 
 
-# create dataframe from the load function 
+## create dataframe from the load function 
 df = load_data()
 
-
-###############################################################################
+##########################################################################################
 ## Start building Streamlit App
-###############################################################################
+##########################################################################################
 
 PAGES = [
     'General Data Explorer',
@@ -43,7 +46,7 @@ PAGES = [
 ]
 
 def run_UI():
-    st.sidebar.title('Patient No Show Predictor')
+    st.sidebar.title('Patient NoShow Analysis')
     if st.session_state["page"]:
         page=st.sidebar.radio('Navigation', PAGES, index=st.session_state["page"])
     else:
@@ -65,7 +68,11 @@ def run_UI():
         st.sidebar.write("""
             ## About
 
-            Accurately predicting patient ‘no-shows’ has many implications. Identifying causes of missed appointments could inform interventions that target vulnerable demographic groups, increase accessibility to clinics, or improve patient-provider communication. Moreover, an accurate prediction of whether an appointment may be missed could allow clinics and hospitals to develop scheduling strategies that minimize the cost of these no shows, such as double booking patients likely to not show up.     
+            Accurately predicting patient ‘no-shows’ has many implications. 
+            
+            Identifying causes of missed appointments could inform interventions that target vulnerable demographic groups, increase accessibility to clinics, or improve patient-provider communication.
+            
+            An accurate prediction of whether an appointment may be missed could allow clinics and hospitals to develop scheduling strategies that minimize the cost of these no shows, such as double booking patients likely to not show up.     
         """)
         st.title("Patient Predictor")
         patient_predictor.patient_predictor_UI(df)
@@ -73,8 +80,10 @@ def run_UI():
     elif page == 'Neighbourhood Analysis':
         st.sidebar.write("""
             ## About
+            
+            Patient no-shows are defined as “appointments that a patient neither attended or canceled on time to be reassigned to another patient”
 
-            Accurately predicting patient ‘no-shows’ has many implications. Identifying causes of missed appointments could inform interventions that target vulnerable demographic groups, increase accessibility to clinics, or improve patient-provider communication. Moreover, an accurate prediction of whether an appointment may be missed could allow clinics and hospitals to develop scheduling strategies that minimize the cost of these no shows, such as double booking patients likely to not show up.     
+            We aim to predict patient no-shows using clinical data from the Brazilian Health Department between November 2015 - June 2016.
         """)
         st.title("Neighbourhood Analysis")
         neighbourhood_analysis.neighbourhood_UI(df)
@@ -83,7 +92,9 @@ def run_UI():
         st.sidebar.write("""
             ## About
             
-            Globally, the delivery of healthcare is constrained by a supply shortage of trained providers and infrastructure. The demands placed on healthcare systems continue to rise as populations grow and age1. The pandemic has exposed and further exacerbated this strain on our hospitals, clinics and healthcare providers; it is now more important than ever to develop systems that efficiently allocate resources, minimize cost and keep our patients healthy.
+            Patient no-shows are defined as “appointments that a patient neither attended or canceled on time to be reassigned to another patient”
+
+            We aim to predict patient no-shows using clinical data from the Brazilian Health Department between November 2015 - June 2016.
         """)
         st.title("Patients Appointments Data")
 
@@ -92,6 +103,7 @@ def run_UI():
 
 if __name__ == '__main__':
 
+    ## Load the streamlit app with Data Explorer as default page
     if runtime.exists():
         url_params = st.experimental_get_query_params()
         if 'loaded' not in st.session_state:
@@ -102,15 +114,3 @@ if __name__ == '__main__':
             st.session_state.page = PAGES.index(url_params['page'][0])
 
         run_UI()
-    # subcol_1, subcol_2 = st.columns(2)
-    # with subcol_1:
-    #     st.session_state.data_type = st.radio("Data resolution:", ('County Level', 'Census Tracts'), index=0)
-    # with subcol_2:
-    #     # Todo: implement for census level too
-    #     if st.session_state.data_type =='County Level':
-    #         st.session_state.data_format = st.radio('Data format', ['Raw Values', 'Per Capita', 'Per Square Mile'], 0)
-
-    # if st.session_state.data_type == 'County Level':
-    #     data_explorer.county_data_explorer()
-    # else:
-    #     data_explorer.census_data_explorer()

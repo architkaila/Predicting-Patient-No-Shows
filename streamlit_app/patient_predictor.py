@@ -58,9 +58,9 @@ def patient_predictor_UI(df):
 
         ## Show patient ID
         if current_gender == 'F':
-            image = Image.open('streamlit_app/data/female.png')
+            image = Image.open('streamlit_app/data/images/female.png')
         else:
-            image = Image.open('streamlit_app/data/male.jpg')
+            image = Image.open('streamlit_app/data/images/male.jpg')
         patient_id = str(df[df["appointmentid"] == int(selected_appointment)]["patientid"].values[0]).split(".")[0]
         st.image(image, caption = f'Patient ID: {patient_id}')
         #title = st.text_input()
