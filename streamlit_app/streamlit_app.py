@@ -8,10 +8,11 @@ from streamlit import runtime
 import datetime
 import sqlite3
 
-import data_explorer
-import patient_predictor
-import about_us
-import neighbourhood_analysis
+## Import cutsom built pages
+from components import data_explorer
+from components import patient_predictor
+from components import about_us
+from components import neighbourhood_analysis
 
 @st.cache
 def load_data():
@@ -49,6 +50,9 @@ PAGES = [
 ]
 
 def run_UI():
+    """
+    The main UI function to display the Landing page UI
+    """
     st.sidebar.title('Patient NoShow Analysis')
     if st.session_state["page"]:
         page=st.sidebar.radio('Navigation', PAGES, index=st.session_state["page"])

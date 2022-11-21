@@ -29,7 +29,7 @@ def about_us_UI():
         image = Image.open('streamlit_app/data/images/male.jpg')
         st.image(image, caption="Bruno")
     with row_1_col3:
-        image = Image.open('streamlit_app/data/images/male.jpg')
+        image = Image.open('streamlit_app/data/images/shuai.jpeg')
         st.image(image, caption="Shuai")
     with row_1_col4:
         image = Image.open('streamlit_app/data/images/male.jpg')

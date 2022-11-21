@@ -5,6 +5,17 @@ from sklearn.preprocessing import StandardScaler, OneHotEncoder
 import pickle
 
 def onehot_encode(X, cols):
+    """
+    This function one hot encodes the features
+
+    Agrs:
+    X -> Dataframe which we want to one hot encode
+    cols -> List of column names you want to one hot encode
+
+    Returns:
+    X -> One hot encoded dataframe
+    onehot_enc -> the encoder object used to one hot encode
+    """
     # Treat new categories as a new 'unknown' category (all onehot columns are 0)
     onehot_enc = OneHotEncoder(handle_unknown='ignore')
     # Fit encoder on training data
@@ -21,6 +32,16 @@ def onehot_encode(X, cols):
 
 
 def predict_patient_showup(appointment_id, df):
+    """
+    This function predicts the patient no show
+
+    Args:
+    appointment_id -> appointment for which we want to predict show / no show
+    df -> the primary dataset
+
+    Returns:
+    the predicted class 0 or 1
+    """
     # Load the model
     with open('./streamlit_app/data/finalized_model.sav', 'rb') as f:
         model = pickle.load(f)
