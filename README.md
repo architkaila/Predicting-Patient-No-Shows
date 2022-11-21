@@ -3,7 +3,6 @@
 &nbsp;
 
 ## Project Description
----
 Globally, the delivery of healthcare is constrained by a supply shortage of trained providers and infrastructure. The demands placed on healthcare systems continue to rise as populations grow and age. The pandemic has exposed and further exacerbated this strain on our hospitals, clinics and healthcare providers; it is now more important than ever to develop systems that efficiently allocate resources, minimize cost and keep our patients healthy
 
 Patient no-shows are defined as “appointments that a patient neither attended or canceled on time to be reassigned to another patient”. While ‘no-shows’ directly impact patient health by delaying care and interrupting treatment, they also incur a financial cost
@@ -12,7 +11,6 @@ Our project aims to predict patient no-shows using clinical data from the Brazil
 
 &nbsp;
 ## About the Data
----
 We have identified three key data sources that we believe will be valuable in predicting the patient show up probablity: patient appointments data, weather data, and hospital ratings data. We combined all the datasets together to predict our binary target variable - Show (Class 0) vs NoShow (Class 1). The primary goal of this prediction is to minimize the cost of missed appointments for hospitals and clinics, thus our primary metric of success will be the recall of our predictions
 Find an in-depth description of each datset below:
 
@@ -40,7 +38,6 @@ We extracted the average ratings of hospitals in a given neighbourhoods to explo
 
 &nbsp;
 ## Data Processing and Modelling
----
 The patient appointments data is avaiable at a daily level of granuality with 14 features. The datatypes were fixed to interpret numerical columns as integers or floats and string columns as categorical variables. There were outliers in the a few columns like age, which were removed before proceeding for modelling phase. The other sources of data like weather and hospital ratings were sourced from Web API's and cleaned before adding them to our primary dataset. All the raw data was initially dumped into a SQL Database (SQLite)
 
 We engineered some features which we assumed could play a significant role in predicting patient show up. A few examples are - waiting time while booking an appointment, day of the week, age group, number of appointments booked by a patient historically and number of appointments missed in the past. Post processing all the data, we stored everything back in our database. This processed data is used by the models as well as the streamlit app. We used univariate feature selection methods to find irrelevant features and remove them from our training data in order to reduce model complexity. The feature importances from tree models were used for final feature selection during model building phase
@@ -49,12 +46,10 @@ We used Grid search to find optimal model performance. Our metric in focus was f
 
 &nbsp;
 ## Accessing the Data
----
 The raw and processed data is stored in an local SQLite Database. If you would like to setup this Database, you can run the python notebooks present in "data_sourcing" directory to fetch all the data from different sources. Post data souring, run the database.ipynb notebook to setup your data base instance.
 
 &nbsp;
 ## Running the Code
----
 
 **1. Clone this repository**
 ```
@@ -92,7 +87,6 @@ python -m ipykernel install --user --name=environ
 
 &nbsp;
 ## Streamlit Application: EDA & Model Demo
----
 **1. Install requirements for streamlit app (python version>3.7)**
 ```
 pip install -r ./streamlit_app/requirements.txt
