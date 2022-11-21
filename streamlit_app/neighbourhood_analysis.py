@@ -64,6 +64,9 @@ def neighbourhood_UI(df):
     waitint_time_by_neighbourhood = df.groupby('neighbourhood').days_between_appointment_and_scheduled_day.mean()
     avg_wait_selected_neigh = round(waitint_time_by_neighbourhood[neighbourhood_selected], 1)
 
+    # Rating of neighbourhood
+    rating = round(np.mean(df_filtered_neigh["rating"]),1)
+
     count_shows = df_filtered_neigh["showed"].value_counts()[1]
     count_no_shows = df_filtered_neigh["showed"].value_counts()[0]
     showup_percent = round( (count_shows/patients_from_neigh)*100, 1)
@@ -72,8 +75,8 @@ def neighbourhood_UI(df):
     data_to_plot_row2 = {
         "Avg Waiting time":str(avg_wait_selected_neigh) + " days",
         "Total Patients":str(patients_from_neigh),
-        "Patient ShowUp %":str(showup_percent) + " %",
         "Patient No ShowUp %":str(no_showup_percent) + " %",
+        "Rating":str(rating),
     }
 
     ## Add view cards for basic information around data

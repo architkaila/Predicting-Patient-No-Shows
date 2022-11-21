@@ -12,7 +12,7 @@ import seaborn as sns
 from matplotlib.backends.backend_agg import RendererAgg
 from matplotlib.figure import Figure
 
-def data_explorer_UI(df):
+def data_explorer_UI(df, df_f_scores):
 
     ## Generate view metrics
     total_num_of_appointments = len(df)
@@ -200,7 +200,7 @@ def data_explorer_UI(df):
     st.markdown("""---""")
     row_5_col1, row_5_col2 =  st.columns(2)
     with row_5_col1, _lock:
-        st.subheader("SMS Reminder (vs) ShowUp%")
+        st.subheader("Reminder (vs) ShowUp%")
         
         ## SMS reminder vs Show Up %
         sms_percent = round((df.query('sms_received == 1 & showed == 1').showed.count() / df.query('sms_received == 1').showed.count()), 3)*100
@@ -208,9 +208,7 @@ def data_explorer_UI(df):
 
 
         data_to_plott_sms = pd.DataFrame({"Reminder":["SMS recieved", "No SMS recieved"],
-                            "ShowUp %":[no_sms_percent, sms_percent]})
-
-        ## Gender relation with higher show ups        
+                            "ShowUp %":[no_sms_percent, sms_percent]})       
         ## Plot the figure
         fig = Figure()
         ax = fig.subplots()
@@ -219,8 +217,41 @@ def data_explorer_UI(df):
 
         ax.bar_label(ax.containers[0])
         st.pyplot(fig)
+    
+    with row_5_col2, _lock:
+        st.subheader("Scholarship (vs) ShowUp%")
+
+        ## Scholarship vs Show Up %
+        scholarship_percent = (df.query('scholarship == 1 & showed == 1').showed.count() / df.query('scholarship == 1').showed.count())*100
+        no_scholarship_percent = (df.query('scholarship == 0 & showed == 1').showed.count() / df.query('scholarship == 0').showed.count())*100
+
+        data_to_plott_sms = pd.DataFrame({"Scholarship":["Available", "Not Available"],
+                            "ShowUp %":[scholarship_percent, no_scholarship_percent]})
+        
+        ## Plot the figure
+        fig = Figure()
+        ax = fig.subplots()
+
+        sns.barplot(data=data_to_plott_sms, x="Scholarship", y="ShowUp %", ax=ax)
+
+        ax.bar_label(ax.containers[0])
+        st.pyplot(fig)
 
     st.markdown("""---""")
+
+    with st.container():
+        st.subheader("Weather feature analysis")
+
+        ## Plot the figure
+        fig = Figure()
+        ax = fig.subplots()
+
+        sns.barplot(data=df_f_scores, x="Feature", y="F-Score", ax=ax)
+
+        ax.bar_label(ax.containers[0])
+        ax.set_xticklabels(df_f_scores["Feature"], rotation=45) 
+        st.pyplot(fig)
+
 
 
 

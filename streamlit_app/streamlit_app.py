@@ -26,13 +26,16 @@ def load_data():
     df["scheduledday"] = pd.to_datetime(df["scheduledday"], format='%Y-%m-%d %H:%M:%S')
     df["appointmentday"] = pd.to_datetime(df["appointmentday"], format='%Y-%m-%d %H:%M:%S')
 
+    df_f_scores = pd.read_sql_query("SELECT * FROM f_scores_weather", conn)
+    df_f_scores["F-Score"] = round(df_f_scores["F-Score"], 1)
+
     print("[INFO] Data is loaded")
 
-    return df
+    return df, df_f_scores
 
 
 ## create dataframe from the load function 
-df = load_data()
+df, df_f_scores = load_data()
 
 ##########################################################################################
 ## Start building Streamlit App
@@ -98,7 +101,7 @@ def run_UI():
         """)
         st.title("Patients Appointments Data")
 
-        data_explorer.data_explorer_UI(df)
+        data_explorer.data_explorer_UI(df, df_f_scores)
 
 
 if __name__ == '__main__':
